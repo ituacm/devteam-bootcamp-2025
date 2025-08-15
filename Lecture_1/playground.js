@@ -1,20 +1,24 @@
-const p = new Promise((resolve, reject) => {
-  let a = 2 + 1;
-  if (a === 2) {
-    setTimeout(() => {
-      resolve("Success");
-    }, 2000);
-  } else {
-    reject("Failed");
+class Animal {
+  #age;
+  name;
+  constructor(name, age) {
+    this.name = name;
+    this.#age = age;
   }
-});
+  getAge() {
+    return this.#age;
+  }
 
-p.then((message) => console.log("This is successfull: " + message)).catch(
-  (error) => console.log("This is bad: " + error)
-);
+  makeNoise() {
+    console.log("Generic animal noise");
+  }
+}
 
-console.log(p);
-
-setTimeout(() => {
-  console.log(p);
-}, 2500);
+class Dog extends Animal {
+  constructor(name, age) {
+    super(name, age);
+  }
+  makeNoise() {
+    console.log("Bark");
+  }
+}

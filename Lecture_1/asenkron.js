@@ -107,8 +107,47 @@ async function displayVideo() {
 
 displayVideo();
 
-//try-catch
+function fetchVideo() {
+  return new Promise((resolve, reject) => {
+    console.log("Fetching...");
+    setTimeout(() => {
+      const ok = true; // örnek
+      if (ok) {
+        console.log("Fetched successfully.");
+        resolve(true);
+      } else {
+        reject(new Error("Couldn't fetch."));
+      }
+    }, 2000);
+  });
+}
 
+function watchVideo() {
+  return new Promise((resolve, reject) => {
+    console.log("Watching Video...");
+    setTimeout(() => {
+      if (true) {
+        console.log("Video watched.");
+        resolve("Video watched.");
+      } else {
+        console.log("Couldn't watch.");
+
+        reject("Couldn't watch.");
+      }
+    }, 2000);
+  });
+}
+
+async function fetchAndWatch(fp, wp) {
+  const isFetched = await fp();
+  if (isFetched) {
+    await wp();
+  }
+}
+
+fetchAndWatch(fetchVideo, watchVideo);
+
+//try-catch
 function fetchData() {
   return new Promise((resolve, reject) => {
     setTimeout(() => {

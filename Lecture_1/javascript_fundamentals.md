@@ -133,6 +133,37 @@ const regularGreet = function () {
 const arrowGreet = () => {
   console.log("Hello World");
 };
+
+//this scope
+const person = {
+  name: "Ali",
+  regularFunc: function () {
+    console.log(this.name);
+  },
+};
+
+person.regularFunc(); // "Ali"
+
+const person = {
+  name: "Ali",
+  arrowFunc: () => {
+    console.log(this.name);
+  },
+};
+
+person.arrowFunc(); // undefined (çünkü dış bağlam global scope)
+
+//arguments object
+function regular(a, b) {
+  console.log(arguments); // [Arguments] { '0': 1, '1': 2 }
+}
+
+const arrow = (a, b) => {
+  console.log(arguments); // ReferenceError
+};
+
+regular(1, 2);
+arrow(1, 2);
 ```
 
 ---
@@ -300,5 +331,91 @@ displayData();
 ```
 
 ---
+
+## 9. Class'lar (Sınıflar)
+
+JavaScript'te **class**, nesne tabanlı programlama yapısını daha okunabilir ve düzenli bir şekilde yazmamıza olanak sağlayan bir sözdizimidir. ES6 ile gelmiştir.
+
+### Temel Kullanım
+
+```js
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  greet() {
+    console.log(
+      `Hello, my name is ${this.name} and I am ${this.age} years old.`
+    );
+  }
+}
+
+const person1 = new Person("Alice", 25);
+const person2 = new Person("Bob", 30);
+
+person1.greet();
+```
+
+### Inheritance (Kalıtım)
+
+```js
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    console.log(`${this.name} makes a sound.`);
+  }
+}
+
+class Dog extends Animal {
+  constructor(name, breed) {
+    super(name);
+    this.breed = breed;
+  }
+
+  speak() {
+    console.log(`${this.name} barks.`);
+  }
+}
+
+const myDog = new Dog("Karabaş", "Kangal");
+myDog.speak();
+```
+
+### Static Metodlar
+
+```js
+class MathUtils {
+  static add(a, b) {
+    return a + b;
+  }
+}
+
+console.log(MathUtils.add(5, 3)); // 8
+```
+
+### Private Alanlar ve Getter/Setter
+
+```js
+class BankAccount {
+  #balance = 0;
+
+  deposit(amount) {
+    this.#balance += amount;
+  }
+
+  get balance() {
+    return this.#balance;
+  }
+}
+
+const acc = new BankAccount();
+acc.deposit(100);
+console.log(acc.balance); // 100
+```
 
 Bu içerik, JavaScript'in temel kavramlarını anlamanızı sağlayarak, Express.js ve React.js ile çalışmanızı kolaylaştıracaktır. 🚀
