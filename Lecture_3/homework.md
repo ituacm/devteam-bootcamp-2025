@@ -13,7 +13,8 @@
 
 ### 1) Proje ve Bağlantı Ayarları
 
-- PostgreSQL + TypeORM entegrasyonunu kur (bağlantı URL/credentials formatı serbest).
+- **NeonDB** cloud PostgreSQL + TypeORM entegrasyonunu kur (bağlantı URL/credentials formatı serbest).
+- NeonDB'den aldığın connection detaylarını kullanarak veritabanı bağlantısını kur.
 - TypeORM yapılandırmanda **`synchronize: false`** kullan; şema değişikliklerini **migration** ile yönet.
 
 ### 2) ERD / Şema
