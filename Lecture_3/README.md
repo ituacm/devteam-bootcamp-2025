@@ -8,6 +8,10 @@ npm install typeorm reflect-metadata
 npm install pg
 ```
 
+```
+npm install dotenv
+```
+
 # Generate Schema
 
 ```js
