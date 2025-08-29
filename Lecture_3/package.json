@@ -1,0 +1,28 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js",
+    "migration:generate": "typeorm migration:generate -d ./db/data-source.js -o --esm",
+    "migration:run": "typeorm migration:run -d ./db/data-source.js",
+    "migration:revert": "typeorm migration:revert -d ./db/data-source.js",
+    "migration:show": "typeorm migration:show -d ./db/data-source.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.26"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
