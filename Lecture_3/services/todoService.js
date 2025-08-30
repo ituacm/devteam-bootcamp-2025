@@ -1,4 +1,6 @@
+import * as z from "zod";
 import { AppDataSource } from "../db/data-source.js";
+import { TodosSchema } from "../schema/Todos.schema.js";
 
 const todoRepo = AppDataSource.getRepository("Todos");
 
@@ -14,11 +16,37 @@ export const addTodo = async (req, res) => {
   res.status(201).json({ message: `${todo.title} added successfully.` });
 };
 
-export const checkTodoFormat = (req, res, next) => {
-  const { title, description } = req.body;
+export const addTodoWithMigration = async (req, res) => {
+  await todoRepo.manager.transaction(async (entityManager) => {
+    const todo = entityManager.create(TodosSchema, req.body);
 
-  if (typeof title !== "string" || typeof description !== "string") {
-    return res.status(400).json({ message: "Invalid todo format" });
+    // Save first todo
+    await entityManager.save(TodosSchema, todo);
+
+    // Make another copy
+    const copyTodo = entityManager.create(TodosSchema, {
+      title: todo.title + " (Copy)",
+      description: todo.description + " (Copy)",
+    });
+    await entityManager.save(TodosSchema, copyTodo);
+  });
+
+  res.status(201).json({ message: `Todos added successfully.` });
+};
+
+export const validateTodo = (req, res, next) => {
+  const todoSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+  });
+
+  const result = todoSchema.safeParse(req.body);
+
+  if (!result.success) {
+    const error = JSON.parse(result.error.message);
+
+    return res.status(400).json({ message: error });
   }
+
   next();
 };

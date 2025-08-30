@@ -2,12 +2,14 @@ import express from "express";
 import {
   getAllTodos,
   addTodo,
-  checkTodoFormat,
+  validateTodo,
+  addTodoWithMigration,
 } from "../services/todoService.js";
 
 const router = express.Router();
 
 router.get("/", getAllTodos);
-router.post("/", checkTodoFormat, addTodo);
+router.post("/", validateTodo, addTodo);
+router.post("/migration", validateTodo, addTodoWithMigration);
 
 export default router;
