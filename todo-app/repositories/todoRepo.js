@@ -1,3 +1,4 @@
+import { TODO_NOT_FOUND } from "../utils/errorMessages.js";
 import { v4 as uuidv4 } from "uuid";
 
 let todos = [];
@@ -36,7 +37,7 @@ export function create({ title, description, userId }) {
 
 export function update(id, { title, description, completed, userId }) {
   const todo = getById(id);
-  if (!todo) throw { status: 404, message: "Todo not found" };
+  if (!todo) throw { status: 404, message: TODO_NOT_FOUND };
 
   todo.title = title;
   todo.description = description;
@@ -48,7 +49,7 @@ export function update(id, { title, description, completed, userId }) {
 
 export function patch(id, data) {
   const todo = getById(id);
-  if (!todo) throw { status: 404, message: "Todo not found" };
+  if (!todo) throw { status: 404, message: TODO_NOT_FOUND };
 
   Object.assign(todo, data);
   return todo;
@@ -56,6 +57,6 @@ export function patch(id, data) {
 
 export function remove(id) {
   const index = todos.findIndex(t => t.id === id);
-  if (index === -1) throw { status: 404, message: "Todo not found" };
+  if (index === -1) throw { status: 404, message: TODO_NOT_FOUND };
   todos.splice(index, 1);
 }

@@ -1,5 +1,6 @@
 import * as userRepo from "../repositories/userRepo.js";
 import * as todoRepo from "../repositories/todoRepo.js";
+import { USER_NOT_FOUND } from "../utils/errorMessages.js";
 
 export function create(data) {
   return userRepo.create(data);
@@ -11,6 +12,6 @@ export function list() {
 
 export function getUserTodos(userId) {
   const user = userRepo.getById(userId);
-  if (!user) throw { status: 404, message: "User not found" };
+  if (!user) throw { status: 404, message: USER_NOT_FOUND };
   return todoRepo.listByUserId(userId);
 }
