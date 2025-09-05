@@ -148,8 +148,8 @@ app.post('/me/2fa', auth, async (req, res) => {
     { expiresIn: '10m' }
   );
 
-  await sendMail(req.user.email, '2FA Doğrulama', `2FA Token: ${token}`);
-  res.json({ message: 'Doğrulama kodu gönderildi.' });
+  await sendMail(req.user.email, 'İki Faktörlü Doğrulama Tokenı', `${token}`);
+  res.json({ message: 'Doğrulama tokenı gönderildi.' });
 });
 
 app.patch('/me/email', auth, (req, res) => {
@@ -163,7 +163,7 @@ app.patch('/me/email', auth, (req, res) => {
     user.email = newEmail;
     res.json({ message: 'Email güncellendi.' });
   } catch {
-    res.status(403).json({ error: '2FA token geçersiz' });
+    res.status(403).json({ error: '2FA tokenı geçersiz' });
   }
 });
 ```
@@ -171,5 +171,5 @@ app.patch('/me/email', auth, (req, res) => {
 ## Mini Proje
 1. Signup/Login → JWT auth
 2. Todo CRUD (sadece kendi todo’ları)
-3. Email/password değiştirirken 2FA token kontrolü
+3. Email/password değiştirirken 2FA kontrolü
 4. Hesap silme akışı
