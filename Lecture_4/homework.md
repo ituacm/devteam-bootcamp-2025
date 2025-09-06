@@ -122,7 +122,7 @@ async function sendMail(to, title, content) {
 - Token kullanıldığında `used` sütunu `true` olarak güncellenir. Böylece token'ın istenen amaçla ve tek sefer kullanıldığından emin olunur.
 
 ## 🧱 Middleware
-- **authElevated (JWT)**
+- **authElevated (Opaque)**
   - `req.params` üzerinden gönderilen `elevatedAccessToken`'ın varlığını ve geçerliliğini doğrular.
   - Geçerliyse `used : true` set ederek eder; değilse **401 Unauthorized**.
 
