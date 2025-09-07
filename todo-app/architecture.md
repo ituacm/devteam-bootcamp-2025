@@ -18,9 +18,8 @@ src/
   app.js
   server.js
   routes/
-    v1/
-      usersRouter.js
-      todosRouter.js
+    usersRouter.js
+    todosRouter.js
   controllers/
     usersController.js
     todosController.js
