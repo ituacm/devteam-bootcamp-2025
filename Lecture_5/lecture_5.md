@@ -14,7 +14,7 @@
 - Her component, kendi yapısı ve işleviyle bağımsızdır.
 - Tek bir HTML/JS dosyası büyüdükçe yönetmesi zor hale gelir.
 - React sayfayı küçük, tekrar kullanılabilir parçalara ayırır.
-- Örnek component'ler: `Header`, `UserCard`, `Footer`.
+- Örnek component'ler: `Navbar`, `HomePage`, `Footer`.
 
 ### Props
 
