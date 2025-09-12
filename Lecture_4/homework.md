@@ -89,6 +89,7 @@
 
 ### Servis: `kolpo-mail`
 - Derste gösterilen kolpo-mail servisi tek endpointten kullanıcılara eposta gönderilebilen basit bir mock-email servisidir. Yetki yükseltme işlemlerinde bu servis üzerinden kullanıcının mailine yetkisi yükseltilmiş bir token gönderilir.
+- Kolpo Mail setup adımları için video bootcamp wp grubundan classroomdan gönderilecek.
 
 - Mail gönderme requesti:
 ```js

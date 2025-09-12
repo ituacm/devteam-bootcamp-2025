@@ -1,0 +1,41 @@
+.home-page-container {
+    width: 100vw;
+    height: 76vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.home-page-content {
+    width: 50%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.home-page-title {
+    font-size: 3rem;
+}
+
+.home-page-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.2rem;
+    background-color: purple;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-top: 0.8rem;
+    text-decoration: none;
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.navbar-link:hover {
+    color: purple;
+}
