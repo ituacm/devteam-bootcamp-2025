@@ -1,36 +1,84 @@
+import { z } from "zod";
+import { getValidationError } from "../../utils/getValidationError.js";
+
+const createTodoSchema = z.object({
+  title: z.string().min(1, "title is required"),
+  description: z.string().min(1, "description is required"),
+  userId: z.uuid("invalid userId format"),
+});
+
+const updateTodoSchema = z.object({
+  title: z.string().min(1, "title is required"),
+  description: z.string().min(1, "description is required"),
+  completed: z.boolean(),
+  userId: z.uuid("invalid userId format"),
+});
+
+const patchTodoSchema = z
+  .object({
+    title: z.string().min(1).optional(),
+    description: z.string().min(1).optional(),
+    completed: z.boolean().optional(),
+    userId: z.uuid("invalid userId format").optional(),
+  })
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field is required for PATCH",
+  });
+
+const todoIdParamSchema = z.object({
+  id: z.uuid("invalid todo id format"),
+});
+
+const todosQuerySchema = z.object({
+  completed: z.enum(["true", "false"]).optional(),
+  q: z.string().optional(),
+  page: z.string().regex(/^\d+$/, "page must be a number").optional(),
+  limit: z.string().regex(/^\d+$/, "limit must be a number").optional(),
+  sort: z.enum(["createdAt", "title", "updated_at"]).optional(),
+  order: z.enum(["asc", "desc"]).optional(),
+});
+
 export function validateTodoCreate(req, res, next) {
-  const { title, description, userId } = req.body;
-
-  if (!title || !description || !userId) {
-    return res.status(400).json({
-      error: "VALIDATION_ERROR",
-      message: "title, description and userId are required"
-    });
+  try {
+    createTodoSchema.parse(req.body);
+    next();
+  } catch (error) {
+    return res.status(400).json(getValidationError(error));
   }
-
-  next();
 }
 
 export function validateTodoUpdate(req, res, next) {
-  const { method, body } = req;
-  const {title, description, completed, userId} = body;
-
-  if (method === "PUT") {
-    if (!title || !description || completed === undefined || !userId) {
-      return res.status(400).json({
-        error: "VALIDATION_ERROR",
-        message: "All fields (title, description, completed, userId) required for PUT"
-      });
-    }
+  try {
+    updateTodoSchema.parse(req.body);
+    next();
+  } catch (error) {
+    return res.status(400).json(getValidationError(error));
   }
-  if (method === "PATCH") {
-    if (!title && !description && completed === undefined && !userId) {
-      return res.status(400).json({
-        error: "VALIDATION_ERROR",
-        message: "At least one field (title, description, completed, userId) required for PATCH"
-      });
-    }
-  }
+}
 
-  next();
+export function validateTodoPatch(req, res, next) {
+  try {
+    patchTodoSchema.parse(req.body);
+    next();
+  } catch (error) {
+    return res.status(400).json(getValidationError(error));
+  }
+}
+
+export function validateTodoIdParam(req, res, next) {
+  try {
+    todoIdParamSchema.parse(req.params);
+    next();
+  } catch (error) {
+    return res.status(400).json(getValidationError(error));
+  }
+}
+
+export function validateTodosQuery(req, res, next) {
+  try {
+    todosQuerySchema.parse(req.query);
+    next();
+  } catch (error) {
+    return res.status(400).json(getValidationError(error));
+  }
 }

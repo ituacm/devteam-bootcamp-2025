@@ -1,22 +1,41 @@
-import { v4 as uuidv4 } from "uuid";
+import { AppDataSource } from "../db/data-source.js";
 
-const users = [];
+export async function create({ username, email, password_hash }) {
+  const userRepository = AppDataSource.getRepository("User");
 
-export function create({ username, email, password }) {
-  const user = { id: uuidv4(), username, email, password };
-  users.push(user);
-  const { password: _, ...safeUser } = user;
+  const user = userRepository.create({
+    username,
+    email,
+    password_hash,
+  });
+
+  const savedUser = await userRepository.save(user);
+  const { password_hash: _, ...safeUser } = savedUser;
   return safeUser;
 }
 
-export function list() {
-  return users.map(({ password, ...u }) => u);
+export async function list() {
+  const userRepository = AppDataSource.getRepository("User");
+  const users = await userRepository.find();
+  return users.map(({ password_hash, ...u }) => u);
 }
 
-export function getById(id) {
-  const user = users.find(u => u.id === id);
-  if (!user) 
-    return null;
-  const {password: _, ...safeUser} = user;
+export async function getById(id) {
+  const userRepository = AppDataSource.getRepository("User");
+  const user = await userRepository.findOne({ where: { id } });
+
+  if (!user) return null;
+
+  const { password_hash: _, ...safeUser } = user;
   return safeUser;
+}
+
+export async function findByUsername(username) {
+  const userRepository = AppDataSource.getRepository("User");
+  return await userRepository.findOne({ where: { username } });
+}
+
+export async function findByEmail(email) {
+  const userRepository = AppDataSource.getRepository("User");
+  return await userRepository.findOne({ where: { email } });
 }

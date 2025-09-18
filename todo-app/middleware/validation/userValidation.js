@@ -1,19 +1,30 @@
+import { z } from "zod";
+import { getValidationError } from "../../utils/getValidationError.js";
+
+const createUserSchema = z.object({
+  username: z.string().min(1, "username is required"),
+  email: z.email("invalid email format"),
+  password: z.string().min(1, "password is required"),
+});
+
+const userIdParamSchema = z.object({
+  id: z.uuid("invalid user id format"),
+});
+
 export function validateUserCreate(req, res, next) {
-  const { username, email, password } = req.body;
-
-  if (!username || !email || !password) {
-    return res.status(400).json({
-      error: "VALIDATION_ERROR",
-      message: "username, email and password are required"
-    });
+  try {
+    createUserSchema.parse(req.body);
+    next();
+  } catch (error) {
+    return res.status(400).json(getValidationError(error));
   }
+}
 
-  if (!email.includes("@")) {
-    return res.status(400).json({
-      error: "VALIDATION_ERROR",
-      message: "invalid email format"
-    });
+export function validateUserIdParam(req, res, next) {
+  try {
+    userIdParamSchema.parse(req.params);
+    next();
+  } catch (error) {
+    return res.status(400).json(getValidationError(error));
   }
-
-  next();
 }

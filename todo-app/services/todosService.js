@@ -1,39 +1,68 @@
 import * as todoRepo from "../repositories/todoRepo.js";
 import * as userRepo from "../repositories/userRepo.js";
-import { TODO_NOT_FOUND, INVALID_USER_ID, TODO_ALREADY_COMPLETED } from "../utils/errorMessages.js";
+import {
+  TODO_NOT_FOUND,
+  INVALID_USER_ID,
+  TODO_ALREADY_COMPLETED,
+} from "../utils/errorMessages.js";
 
-export function list(query) {
-  return todoRepo.list(query);
+export async function list(query) {
+  return await todoRepo.list(query);
 }
 
-export function getById(id) {
-  const todo = todoRepo.getById(id);
+export async function getById(id) {
+  const todo = await todoRepo.getById(id);
   if (!todo) throw { status: 404, message: TODO_NOT_FOUND };
   return todo;
 }
 
-export function create(data) {
-  const user = userRepo.getById(data.userId);
+export async function create(data) {
+  const user = await userRepo.getById(data.userId);
   if (!user) throw { status: 400, message: INVALID_USER_ID };
-  return todoRepo.create(data);
+
+  const todoData = {
+    title: data.title,
+    description: data.description,
+    user_id: data.userId,
+  };
+
+  return await todoRepo.create(todoData);
 }
 
-export function update(id, data) {
-  return todoRepo.update(id, data);
+export async function update(id, data) {
+  const user = await userRepo.getById(data.userId);
+  if (!user) throw { status: 400, message: INVALID_USER_ID };
+
+  const updateData = {
+    title: data.title,
+    description: data.description,
+    completed: data.completed,
+    user_id: data.userId,
+  };
+
+  return await todoRepo.update(id, updateData);
 }
 
-export function patch(id, data) {
-  return todoRepo.patch(id, data);
+export async function patch(id, data) {
+  if (data.userId) {
+    const user = await userRepo.getById(data.userId);
+    if (!user) throw { status: 400, message: INVALID_USER_ID };
+    data.user_id = data.userId;
+    delete data.userId;
+  }
+
+  return await todoRepo.patch(id, data);
 }
 
-export function remove(id) {
-  return todoRepo.remove(id);
+export async function remove(id) {
+  return await todoRepo.remove(id);
 }
 
-export function completeTodo(id) {
-  const todo = todoRepo.getById(id);
-  if(!todo) throw { status: 404, message: TODO_NOT_FOUND };
-  if(todo.completed) throw { status: 400, message: TODO_ALREADY_COMPLETED };
-  todoRepo.patch(id, { completed: true });
-  return todo;
+export async function completeTodo(id) {
+  const todo = await todoRepo.getById(id);
+  if (!todo) throw { status: 404, message: TODO_NOT_FOUND };
+  if (todo.completed) throw { status: 400, message: TODO_ALREADY_COMPLETED };
+
+  const updatedTodo = await todoRepo.patch(id, { completed: true });
+  return updatedTodo;
 }
