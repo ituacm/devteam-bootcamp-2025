@@ -1,113 +1,306 @@
-# 📅 Hafta 05 — React Frontend: Todo App (Temel İskelet & Listeleme)
+# 📅 Hafta 06 — Advanced State Management & API Integration
 
 ## 🎯 Hedef
 
-Bu hafta yalnızca **temel arayüz iskeletini** çıkarıyoruz ve **mock API**’den veri çekip listeleme yapıyoruz. Auth & CRUD gibi gelişmiş işlemler **haftaya** eklenecek.
+Bu hafta 5. hafta ödevinde oluşturduğunuz Todo uygulamasını **gerçek backend API**'ye bağlayacak, **Redux Toolkit** ile global state management ekleyecek ve **Sentry** ile error monitoring yapacaksınız.
 
-- React ile **Layout + Navbar + Footer** ve **nested routes (Outlet)**
-- **HomePage** (tanıtım) ve **TodosPage** (listeleme) olmak üzere **iki ana sekme**
-- **Login/Sign Up** sayfası sadece **navigasyon** için mevcut (işlevsellik yok)
-- **Mock API**’den todoları çekip **kartlar** halinde listeleme
-- `TodosPage` → veriyi çeker, **prop** olarak `TodoList` bileşenine aktarır
-- `TodoList` içinde **Show More** davranışı: önce **6** öğe, tıklayınca **tümü**
+### Önceki Haftadan Devam Eden Yapı:
 
-> Not: Gerçek backend’e bağlamak haftaya. Bu hafta GET/listing yeterli.
+- ✅ React Layout + Navbar + Footer
+- ✅ HomePage, TodosPage, AuthPage sayfaları
+- ✅ TodoList ve TodoCard bileşenleri
+- ✅ Mock API'den veri çekme
 
----
+### Bu Hafta Eklenecekler:
 
-## 🔌 Mock API
-
-- Aşağıdaki **mock API** endpoint’inden `fetch` ile todo verisi çekin.
-- mockapi url:
-
-```
-https://66b9a5b1fa763ff550f8f787.mockapi.io/ituacm-website-ekibi/todos
-```
+- 🔄 **Redux Toolkit** ile global state management
+- 🌐 **Axios** ile gerçek API entegrasyonu
+- 🐛 **Sentry** ile error monitoring ve debugging
+- ✨ CRUD operasyonları (Create, Update, Delete)
 
 ---
 
-## 🗂️ Rotalar ve Layout
+## 🚀 Yeni Teknolojiler
 
-```
-/             → <HomePage/>
-/login        → <AuthPage/>  (sadece form iskeleti; submit çalışmak zorunda değil)
-/todo         → <TodosPage/> (mock API’den liste)
-```
+### 1. Redux Toolkit
 
-**Layout yapısı**: `Navbar` (yukarıda) + **Outlet** + `Footer` (altta)
+- Global state management için
+- Async operations için `createAsyncThunk`
+- Modern Redux best practices
 
-- **Navbar**: Sol tarafta App adı, ortada sekmeler: **Home**, **Todos**; sağda **Sign Up** ve **Login** linkleri (ikisi de `/login`’e götürebilir veya ayrı pathler verebilirsiniz şimdilik size kalmış).
-- **Footer**: Basit telif/versiyon bilgisi.
+### 2. Axios
+
+- HTTP istekleri için
+- Request/Response interceptors
+- Error handling
+
+### 3. Sentry
+
+- Error monitoring
+- Performance tracking
+- Real-time debugging
 
 ---
 
-## 🧩 Bileşenler (önerilen ağaç)
+## 📦 Kurulum
+
+Aşağıdaki paketleri projenize ekleyin:
+
+```bash
+npm install @reduxjs/toolkit react-redux axios @sentry/react
+```
+
+---
+
+## 🏗️ Redux Store Yapısı
+
+### Store Konfigürasyonu
+
+```javascript
+// src/store/index.js
+import { configureStore } from "@reduxjs/toolkit";
+import todosSlice from "./slices/todosSlice";
+import authSlice from "./slices/authSlice";
+
+export const store = configureStore({
+  reducer: {
+    todos: todosSlice,
+    auth: authSlice,
+  },
+});
+```
+
+### Todos Slice
+
+Aşağıdaki state ve actions'ları içermelidir:
+
+- **State**: `{ todos: [], loading: false, error: null }`
+- **Actions**:
+  - `fetchTodos` (async thunk)
+  - `createTodo` (async thunk)
+  - `updateTodo` (async thunk)
+  - `deleteTodo` (async thunk)
+  - `toggleComplete` (async thunk)
+
+---
+
+## 🌐 API Entegrasyonu
+
+### Backend API Endpoints
+
+Mevcut todo-app backend'ini kullanın (localhost:3000):
+
+```
+GET    /api/todos        → Tüm todoları listele
+GET    /api/todos/:id    → Tek todo getir
+POST   /api/todos        → Yeni todo oluştur
+PUT    /api/todos/:id    → Todo güncelle
+PATCH  /api/todos/:id    → Todo kısmi güncelle
+DELETE /api/todos/:id    → Todo sil
+PATCH  /api/todos/:id/complete → Todo'yu tamamla
+```
+
+### Axios Configuration
+
+```javascript
+// src/api/axios.js
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:3000/api",
+  timeout: 5000,
+});
+
+// Request interceptor
+api.interceptors.request.use((config) => {
+  console.log("API Request:", config);
+  return config;
+});
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("API Error:", error);
+    return Promise.reject(error);
+  }
+);
+```
+
+---
+
+## 🐛 Sentry Konfigürasyonu
+
+### Setup
+
+```javascript
+// src/main.jsx
+import * as Sentry from "@sentry/react";
+
+Sentry.init({
+  dsn: "YOUR_SENTRY_DSN", // Sentry hesabınızdan alın
+  environment: "development",
+  tracesSampleRate: 1.0,
+});
+
+// App'i Sentry.withProfiler ile sarın
+const App = Sentry.withProfiler(YourAppComponent);
+```
+
+### Error Boundaries
+
+Ana bileşenleri Sentry Error Boundary ile sarın:
+
+```javascript
+import { ErrorBoundary } from "@sentry/react";
+
+<ErrorBoundary fallback={ErrorFallback}>
+  <TodosPage />
+</ErrorBoundary>;
+```
+
+---
+
+## 🧩 Güncellenecek Bileşenler
+
+### 1. TodosPage
+
+- Redux store'dan veri çekmeli
+- `useSelector` ve `useDispatch` kullanmalı
+- Sayfa yüklendiğinde `fetchTodos` dispatch etmeli
+- Loading ve error state'lerini göstermeli
+
+### 2. TodoList
+
+- CRUD operasyonları için butonlar ekleyin:
+  - ✅ **Complete/Uncomplete** toggle
+  - ✏️ **Edit** butonu (inline editing)
+  - 🗑️ **Delete** butonu (confirmation ile)
+- Her işlem Redux actions'ları tetiklemeli
+
+### 3. TodoCard
+
+- Complete/Uncomplete toggle butonu
+- Edit ve Delete butonları
+- Loading state'i göstermeli (işlem sırasında)
+
+### 4. Yeni: AddTodoForm
+
+- Yeni todo eklemek için form
+- Title ve description inputları
+- Redux'a `createTodo` dispatch etmeli
+
+---
+
+## 📁 Güncellenmiş Proje Yapısı
 
 ```
 src/
-  layout/
-    AppLayout.jsx
-    Navbar.jsx
-    Footer.jsx
-  pages/
-    HomePage.jsx
-    TodosPage.jsx
-    AuthPage.jsx   // Login/SignUp iskeleti (çalışmasa da olur)
+  store/
+    index.js              # Store configuration
+    slices/
+      todosSlice.js       # Todos state management
+      authSlice.js        # Auth state (boş bırakabilirsiniz)
+  api/
+    axios.js              # Axios configuration
+    todosApi.js           # Todo API calls
   components/
-    TodoList.jsx   // veri props ile gelir, show more state burada
-    TodoCard.jsx   // tek bir todo’yu kart olarak çizer
-  loaders/
-    todosLoader.js
-App.jsx
-App.css
-...
+    TodoList.jsx          # Redux entegrasyonu ile güncellendi
+    TodoCard.jsx          # CRUD butonları eklendi
+    AddTodoForm.jsx       # YENİ - Todo ekleme formu
+    ErrorBoundary.jsx     # YENİ - Sentry error boundary
+  pages/
+    TodosPage.jsx         # Redux entegrasyonu
+    ...
+  hooks/
+    useTodos.js           # YENİ - Custom hook (opsiyonel)
 ```
-
-### Sayfa - Komponent Yapıları:
-
-- **Home Page**:
-
-  - Basit bir karşılama sayfası. Tasarımında tamamen özgürsünüz. Şaşırtın bizi. ( Yapay zekadan yardım alabilirsiniz ama mevzuyu kavramanız açısından kodu kendinizin yazması çok daha faydalı olacaktır. Direkt yapay zekaya yaptırırsanız anlarız :) )
-
-- **TodosPage**:
-  - Veri çekimi: Verilerin sayfa ilk açıldığında hazır bir şekilde orada olmasını istiyoruz. ( **loader** ).
-  - Üstte küçük bir **intro** alanı: `You can view your todos here: ` gibi tek cümle bir açıklama bulunur ( ne yazdığı gerçekten pek de önemli değil )
-  - Listeleme işlemi TodoList adında başka bir komponent üzerinden yapılır.
-- **TodoList**:
-  - Bu komponenti verileri filtrelenmiş şekilde listeleyebilecek şekilde tasarlamanızı istiyoruz.
-  - Komponentin `todos` dışında `filter` adında bir propu olsun. Bu propta `array.filter()` metodunun içinde kullanılacak bir **callback function** girilmesini bekleyin.
-  - Aynı zamanda `header` adında bir prop da olsun. Komponentin en üstünde bu propa girilen değeri başlık olarak gösterin.
-  - En sonunda elde edeceğiniz yapıda komponenti `<ListTodos todos={todos} header="Ongoing Todos:" filter={(todo) => !todo.completed} />` şeklinde kullanarak verileri filtreleyip üstüne istediğiniz başlığı koyabilmelisiniz.
-  - Bu şekilde TodosPage içerisinde devam eden ve tamamlanan todoları ayrı ayrı listeleyin.
-  - Komponent içerisinde showMore adında bir state tanımlayın ve en altta bir Show More/Show Less butonuyla bu state'i yönetin.
-  - showMore'a tıklanmadan önce sadece 3 adet todo listeleyin. tıklanırsa hepsi listelensin.
-- **TodoCard**:
-
-  - Sade kart: `title`, `description` (iki satır kesme opsiyonel).
-  - Listeleme işlemlerinde veriyi bu komponenti kullanarak gösterin. Şık tasarlayabilirseniz güzel olur biraz göze hitap etsin.
-
-- **AuthPage**
-  - Basit bir email - password formu ve altında login/signup butonu bulunur. İşlevsel olması gerekmiyor. Sayfa sadece var olsun, butona tıklandığında birşey olmasın. Tasarımsal olarak dilediğinizce uğraşabilirsiniz.
 
 ---
 
 ## 🧪 Kabul Kriterleri
 
-1. **Navigasyon & Layout**
-   - Navbar ve Footer tüm sayfalarda görünür.
-   - Outlet, Navbar ile Footer’ın **arasına** yerleştirilmiş.
-   - Navbar’da **Home**, **Todos**, **Sign Up**, **Login** linkleri var.
-2. **HomePage**
-   - Uygulama tanıtımı içeren kısa bir metin ve çağrı linki (örn. "Todos’a git").
-3. **TodosPage**
-   - Mock API’den GET ile todolar çekiliyor.
-   - Üstte bir cümle açıklama var.
-   - Altında `TodoList` komponentine **props** ile veri, filtre callback'i ve header aktarılıyor. Tamamlanmış ve devam eden todolar ayrı ayrı listeleniyor.
-   - İlk yüklemede **en fazla 3** todo görünüyor; **Show More** tıklanınca **tüm** todolar listeleniyor.
-   - Her todo **TodoCard** bileşeninde gösteriliyor.
-4. **AuthPage**
-   - Basit login & sign up form iskeleti (inputlar + butonlar). Submit zorunlu değil; sadece UI.
+### 1. Redux Toolkit Entegrasyonu ✅
+
+- [ ] Redux store kurulmuş ve Provider ile App sarılmış
+- [ ] TodosSlice oluşturulmuş ve async thunk'lar tanımlanmış
+- [ ] Bileşenler `useSelector` ve `useDispatch` kullanıyor
+- [ ] Loading ve error state'leri yönetiliyor
+
+### 2. Axios API Entegrasyonu ✅
+
+- [ ] Axios konfigüre edilmiş (base URL, interceptors)
+- [ ] Tüm CRUD operasyonları çalışıyor:
+  - GET: Todoları listeleme
+  - POST: Yeni todo ekleme
+  - PUT/PATCH: Todo güncelleme
+  - DELETE: Todo silme
+  - PATCH: Todo complete/uncomplete
+- [ ] API hataları yakalanıyor ve kullanıcıya gösteriliyor
+
+### 3. Sentry Entegrasyonu ✅
+
+- [ ] Sentry kurulmuş ve konfigüre edilmiş
+- [ ] Error boundary'ler uygulanmış
+- [ ] API hataları Sentry'e gönderiliyor
+- [ ] Console'da Sentry logları görünüyor
+
+### 4. UI/UX İyileştirmeleri ✅
+
+- [ ] Loading spinner'ları eklenmiş
+- [ ] Error mesajları güzel gösteriliyor
+- [ ] CRUD operasyonları için butonlar eklendi
+- [ ] Yeni todo ekleme formu çalışıyor
+- [ ] Delete işlemi için confirmation dialog'u var
+
+### 5. Code Quality ✅
+
+- [ ] Redux actions ve reducers düzgün organize edilmiş
+- [ ] API calls merkezi bir yerden yönetiliyor
+- [ ] Error handling tutarlı şekilde yapılmış
+- [ ] Console'da gereksiz error/warning yok
 
 ---
 
-İyi çalışmalar 💙🚀
+## 💡 İpuçları
+
+1. **Redux DevTools** extension'ını kullanarak state değişimlerini takip edin
+2. **Sentry Dashboard**'da gerçek zamanlı hataları görün
+3. **Network Tab**'da API isteklerini kontrol edin
+4. **Backend'i çalıştırmayı unutmayın**: `cd todo-app/backend && npm run dev`
+5. Loading state'leri için basit spinner'lar kullanın
+6. Error mesajlarını kullanıcı dostu hale getirin
+
+---
+
+## 🎯 Bonus Görevler (Opsiyonel)
+
+1. **Custom Hook**: `useTodos` hook'u oluşturun
+2. **Optimistic Updates**: Silme/güncelleme işlemlerinde UI'ı hemen güncelleyin
+3. **Search/Filter**: Redux'da search ve filter state'i yönetin
+4. **Persistence**: Redux Persist ile state'i localStorage'da saklayın
+
+---
+
+## 🚨 Önemli Notlar
+
+- **Backend'i çalıştırmayı unutmayın!** Todo-app klasöründeki backend'i `npm run dev` ile başlatın
+- **Sentry DSN**: Ücretsiz Sentry hesabı oluşturup DSN'inizi alın
+- **CORS**: Backend'de CORS ayarları yapılmış olmalı
+- **Error Handling**: Her API çağrısında error handling yapın
+- **State Structure**: Redux state'i düzgün organize edin
+
+---
+
+Bu ödev sayesinde modern React uygulamalarında kullanılan temel teknolojileri (Redux Toolkit, Axios, Sentry) öğrenmiş olacaksınız.
+
+İyi çalışmalar! 💙🚀
+
+---
+
+## 📚 Faydalı Kaynaklar
+
+- [Redux Toolkit Docs](https://redux-toolkit.js.org/)
+- [Axios Docs](https://axios-http.com/)
+- [Sentry React Docs](https://docs.sentry.io/platforms/javascript/guides/react/)
+- [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools)
