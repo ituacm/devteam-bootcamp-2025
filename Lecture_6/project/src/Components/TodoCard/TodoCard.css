@@ -1,0 +1,9 @@
+.todo-card-container {
+    width: 32%;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    border: 1px solid lightgray;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
