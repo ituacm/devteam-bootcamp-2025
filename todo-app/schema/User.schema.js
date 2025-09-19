@@ -27,7 +27,7 @@ export const UserSchema = new EntitySchema({
       nullable: false,
     },
     created_at: {
-      type: "timestamp",
+      type: "timestamptz",
       default: () => "CURRENT_TIMESTAMP",
     },
   },

@@ -28,11 +28,11 @@ export const TodoSchema = new EntitySchema({
       nullable: false,
     },
     created_at: {
-      type: "timestamp",
+      type: "timestamptz",
       default: () => "CURRENT_TIMESTAMP",
     },
     updated_at: {
-      type: "timestamp",
+      type: "timestamptz",
       default: () => "CURRENT_TIMESTAMP",
       onUpdate: "CURRENT_TIMESTAMP",
     },
