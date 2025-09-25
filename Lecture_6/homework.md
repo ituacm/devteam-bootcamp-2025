@@ -51,6 +51,13 @@ Mevcut mock API'yi bırakıp **todo-app/backend** API'sine geçin:
 - Network error durumları
 - Form validation hataları
 
+### 6. 🔧 ESLint Kurulumu
+
+- [Eslint](https://eslint.org/) ve [Prettier](https://prettier.io/) konfigürasyonu
+- React ve Redux için uygun rules
+- Pre-commit hooks (opsiyonel)
+- Code quality standartları
+
 ---
 
 ## 📝 Detaylar
