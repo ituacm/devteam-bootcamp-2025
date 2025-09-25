@@ -4,7 +4,7 @@
 
 Geçen hafta mock API ile temel listeleme yaptınız. Bu hafta **gerçek backend API**'sine bağlanıp **tam CRUD** işlemleri yapacak, **global state** yönetimi ekleyecek ve **error handling** sistemi kuracaksınız.
 
-- 🔄 **Redux Toolkit** ile global state management
+- 🔄 **Zustand** ile global state management
 - 🌐 **Axios** ve **React Query** ile API entegrasyonu
 - 🔧 **CRUD** operasyonları (Create, Update, Delete)
 - 🔐 **Kullanıcı sistemi** entegrasyonu
@@ -22,7 +22,7 @@ Mevcut mock API'yi bırakıp **todo-app/backend** API'sine geçin:
 - **Axios** instance oluşturun
 - **React Query** ile veri yönetimi yapın
 
-### 2. 🔄 Global State (Redux Toolkit)
+### 2. 🔄 Global State (Zustand)
 
 - **User authentication** ve ona ait **loading** ve **error** state'leri
 
@@ -50,13 +50,16 @@ Mevcut mock API'yi bırakıp **todo-app/backend** API'sine geçin:
 - **Toast notifications** sistemi
 - Network error durumları
 - Form validation hataları
+- **[Sentry](https://sentry.io/)** entegrasyonu ile error monitoring
+- Production hatalarını otomatik yakalama ve raporlama
 
 ### 6. 🔧 ESLint Kurulumu
 
 - [Eslint](https://eslint.org/) ve [Prettier](https://prettier.io/) konfigürasyonu
-- React ve Redux için uygun rules
+- React ve Zustand için uygun kurallar
 - Pre-commit hooks (opsiyonel)
 - Code quality standartları
+- Sadece frontend için eslint engtegrasyonu yapmanız yeterlidir
 
 ---
 
