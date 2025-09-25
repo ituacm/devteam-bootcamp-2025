@@ -5,10 +5,16 @@ import usersRouter from "./routes/usersRouter.js";
 import todosRouter from "./routes/todosRouter.js";
 import { notFoundHandler } from "./middleware/errors/notFoundHandler.js";
 import { errorHandler } from "./middleware/errors/errorHandler.js";
+import cors from "cors";
 
 const app = express();
 
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 
 AppDataSource.initialize()
   .then(() => {

@@ -1,10 +1,19 @@
 import React from "react";
 import "./TodosPage.css";
 import TodoList from "../../Components/TodoList/TodoList";
-import { useLoaderData } from "react-router-dom";
+import { useTodosQuery } from "../../queries";
+import { useError, useIsLoading, useTodos } from "../../store/todoStore";
 
 function TodosPage() {
-  const todos = useLoaderData();
+  useTodosQuery();
+  const todos = useTodos();
+  const isLoading = useIsLoading();
+  const error = useError();
+
+  if (error) {
+    return <div>Error: {error.response?.data?.message}</div>;
+  }
+
   return (
     <div className="todos-page-container">
       <div className="todos-page-content">
@@ -14,6 +23,13 @@ function TodosPage() {
           tasks. Add, edit, or remove todos as you need.
         </p>
         <TodoList todos={todos} />
+        <button
+          onClick={() => {
+            throw new Error("Test error");
+          }}
+        >
+          Test error
+        </button>
       </div>
     </div>
   );

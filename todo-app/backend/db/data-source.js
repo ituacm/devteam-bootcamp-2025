@@ -13,7 +13,7 @@ export const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME || "neondb",
   synchronize: false,
-  logging: true,
+  logging: false,
   entities: [UserSchema, TodoSchema],
   migrations: ["./migrations/*.js"],
   migrationsTableName: "migrations",
