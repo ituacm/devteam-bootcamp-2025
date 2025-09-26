@@ -24,7 +24,7 @@ export function authRequired(req, res, next) {
 // }
 export function permissionRequired(scope) {
   return (req, res, next) => {
-    const permissionToken = req.body.token;
+    const permissionToken = req.query.token;
 
     if (!permissionToken)
       return res.status(403).send({ message: "Could not find permission token." });
@@ -34,7 +34,10 @@ export function permissionRequired(scope) {
         permissionToken, JWT_SECRET
       );
 
-      if (parsedPermissionToken.scope.includes(scope)) {
+      if (
+        parsedPermissionToken.scope.includes(scope) &&
+          parsedPermissionToken.id == req.user.id
+      ) {
         next();
       } else {
         return res.status(403).send({

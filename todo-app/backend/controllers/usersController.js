@@ -23,3 +23,25 @@ export async function login(req, res) {
 
   res.json({ token, user });
 }
+
+export async function authorize(req, res) {
+  await usersService.sendAuthorizationToken(
+    req.user.email,
+    req.user.id,
+    req.body.scope
+  );
+
+  res.json(true);
+}
+
+export async function changePassword(req, res) {
+  await usersService.updatePassword(req.user.id, req.body.password);
+
+  res.json(true);
+}
+
+export async function changeEmail(req, res) {
+  await usersService.updateEmail(req.user.id, req.body.email);
+
+  res.json(true);
+}

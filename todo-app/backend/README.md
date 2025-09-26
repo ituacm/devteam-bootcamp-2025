@@ -26,6 +26,8 @@ DB_HOST=your-neon-db-host
 DB_USERNAME=your-db-username
 DB_PASSWORD=your-db-password
 DB_NAME=neondb
+JWT_SECRET=CHANGEME
+KOLPOMAIL_HOST=http://your-kolpomail-host
 ```
 
 3. Migration'ları çalıştırın:

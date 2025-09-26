@@ -1,9 +1,8 @@
 import * as userRepo from "../repositories/userRepo.js";
 import * as todoRepo from "../repositories/todoRepo.js";
 import { USER_NOT_FOUND } from "../utils/errorMessages.js";
-import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+import { authenticationToken, authorizationToken } from "../utils/token.js";
+import { sendMail } from "./mailService.js";
 
 export async function create(data) {
   const existingUsername = await userRepo.findByUsername(data.username);
@@ -30,9 +29,15 @@ export async function list() {
 }
 
 export async function getUserTodos(userId, query = {}) {
-  const user = await userRepo.getById(userId);
-  if (!user) throw { status: 404, message: USER_NOT_FOUND };
   return await todoRepo.listByUserId(userId, query);
+}
+
+export async function updatePassword(userId, password) {
+  await userRepo.updatePassword(userId, password);
+}
+
+export async function updateEmail(userId, email) {
+  await userRepo.updateEmail(userId, email);
 }
 
 export async function login(username, password) {
@@ -41,11 +46,18 @@ export async function login(username, password) {
     throw { status: 401, message: "Invalid credentials" };
   }
 
-  const token = jwt.sign(
-    { id: user.id, email: user.email, username },
-    JWT_SECRET,
-    { expiresIn: "1h" }
-  );
+  const token = authenticationToken(user);
 
   return { token, user };
+}
+
+export async function sendAuthorizationToken(email, userId, scope) {
+  await sendMail(
+    email,
+    `Doğrulama Tokenınınz (${scope.join(", ")})`,
+    authorizationToken({
+      id: userId,
+      scope
+    })
+  )
 }
