@@ -7,6 +7,7 @@ import {
   patchTodo,
   deleteTodo,
   completeTodo,
+  listUsersTodos,
 } from "../controllers/todosController.js";
 import {
   validateTodoCreate,
@@ -16,10 +17,13 @@ import {
   validateTodosQuery,
 } from "../middleware/validation/todoValidation.js";
 import { controllerResponseHandler } from "../utils/handlers.js";
+import { authRequired } from "../middleware/auth.js";
 
 const router = Router();
 
-router.get("/", validateTodosQuery, controllerResponseHandler(listTodos));
+router.use(authRequired);
+
+router.get("/", validateTodosQuery, controllerResponseHandler(listUsersTodos));
 router.get("/:id", validateTodoIdParam, controllerResponseHandler(getTodoById));
 router.post("/", validateTodoCreate, controllerResponseHandler(createTodo));
 router.put(

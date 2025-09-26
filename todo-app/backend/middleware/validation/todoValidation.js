@@ -4,14 +4,12 @@ import { getValidationError } from "../../utils/getValidationError.js";
 const createTodoSchema = z.object({
   title: z.string().min(1, "title is required"),
   description: z.string().min(1, "description is required"),
-  userId: z.uuid("invalid userId format"),
 });
 
 const updateTodoSchema = z.object({
   title: z.string().min(1, "title is required"),
   description: z.string().min(1, "description is required"),
   completed: z.boolean(),
-  userId: z.uuid("invalid userId format"),
 });
 
 const patchTodoSchema = z

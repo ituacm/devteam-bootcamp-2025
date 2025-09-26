@@ -3,24 +3,22 @@ import {
   authorize,
   changePassword,
   changeEmail,
-  getUserTodos,
-} from "../controllers/usersController.js";
-import {
-  authRequired,
-  permissionRequired
-} from "../middleware/auth.js";
+  getMe,
+} from "../controllers/accountController.js";
+import { authRequired, permissionRequired } from "../middleware/auth.js";
 import { controllerResponseHandler } from "../utils/handlers.js";
 import {
   validateChangeEmail,
   validateChangePassword,
-  validateRequestedPermissions
-} from "../middleware/validation/userValidation.js";
+  validateRequestedPermissions,
+} from "../middleware/validation/accountValidation.js";
 
 const router = Router();
 
-router.use(authRequired)
+router.use(authRequired);
 
-router.get("/todos", controllerResponseHandler(getUserTodos));
+router.get("/", controllerResponseHandler(getMe));
+
 router.post(
   "/2fa",
   validateRequestedPermissions,

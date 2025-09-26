@@ -1,10 +1,5 @@
 import * as usersService from "../services/usersService.js";
 
-export async function createUser(req, res) {
-  const user = await usersService.create(req.body);
-  res.status(201).json(user);
-}
-
 export async function listUsers(req, res) {
   const users = await usersService.list();
   res.json(users);
@@ -13,35 +8,4 @@ export async function listUsers(req, res) {
 export async function getUserTodos(req, res) {
   const todos = await usersService.getUserTodos(req.user.id, req.query);
   res.json(todos);
-}
-
-export async function login(req, res) {
-  const { token, user } = await usersService.login(
-    req.body.username,
-    req.body.password
-  );
-
-  res.json({ token, user });
-}
-
-export async function authorize(req, res) {
-  await usersService.sendAuthorizationToken(
-    req.user.email,
-    req.user.id,
-    req.body.scope
-  );
-
-  res.json(true);
-}
-
-export async function changePassword(req, res) {
-  await usersService.updatePassword(req.user.id, req.body.password);
-
-  res.json(true);
-}
-
-export async function changeEmail(req, res) {
-  await usersService.updateEmail(req.user.id, req.body.email);
-
-  res.json(true);
 }

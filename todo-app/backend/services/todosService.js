@@ -17,9 +17,6 @@ export async function getById(id) {
 }
 
 export async function create(data) {
-  const user = await userRepo.getById(data.userId);
-  if (!user) throw { status: 400, message: INVALID_USER_ID };
-
   const todoData = {
     title: data.title,
     description: data.description,
@@ -30,9 +27,6 @@ export async function create(data) {
 }
 
 export async function update(id, data) {
-  const user = await userRepo.getById(data.userId);
-  if (!user) throw { status: 400, message: INVALID_USER_ID };
-
   const updateData = {
     title: data.title,
     description: data.description,
@@ -44,11 +38,9 @@ export async function update(id, data) {
 }
 
 export async function patch(id, data) {
-  if (data.userId) {
-    const user = await userRepo.getById(data.userId);
-    if (!user) throw { status: 400, message: INVALID_USER_ID };
-    data.user_id = data.userId;
-    delete data.userId;
+  const todo = await todosService.getUsersTodoById(req.user.id, req.params.id);
+  if (!todo) {
+    return res.status(404).json({ message: "Todo not found" });
   }
 
   return await todoRepo.patch(id, data);
@@ -65,4 +57,21 @@ export async function completeTodo(id) {
 
   const updatedTodo = await todoRepo.patch(id, { completed: true });
   return updatedTodo;
+}
+
+export async function listByUserId(userId, query = {}) {
+  const user = await userRepo.getById(userId);
+  if (!user) throw { status: 404, message: INVALID_USER_ID };
+
+  return await todoRepo.listByUserId(userId, query);
+}
+
+export async function getUsersTodoById(userId, todoId) {
+  const user = await userRepo.getById(userId);
+  if (!user) throw { status: 404, message: INVALID_USER_ID };
+
+  const todo = await todoRepo.getById(todoId);
+  if (!todo || todo.user_id !== userId)
+    throw { status: 404, message: TODO_NOT_FOUND };
+  return todo;
 }

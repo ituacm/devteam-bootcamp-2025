@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "migration:generate": "typeorm migration:generate -d ./db/data-source.js -o --esm",
+    "migration:generate": "typeorm migration:generate -d ./db/data-source.js -o --esm ./migrations/new-migration",
     "migration:run": "typeorm migration:run -d ./db/data-source.js",
     "migration:revert": "typeorm migration:revert -d ./db/data-source.js",
     "migration:show": "typeorm migration:show -d ./db/data-source.js"

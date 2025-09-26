@@ -1,4 +1,4 @@
-const KOLPOMAIL_HOST = process.env.KOLPOMAIL_HOST || "http://localhost:1186";
+const KOLPOMAIL_HOST = process.env.KOLPOMAIL_HOST;
 
 export async function sendMail(to, title, content) {
   await fetch(KOLPOMAIL_HOST + "/api/internal/mail", {
@@ -9,7 +9,7 @@ export async function sendMail(to, title, content) {
       from: "no-reply@my-todo-application.com",
       content,
       type: "html",
-      title
+      title,
     }),
   });
 }

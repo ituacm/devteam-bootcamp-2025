@@ -2,19 +2,16 @@ import { DataSource } from "typeorm";
 import { UserSchema } from "../schema/User.schema.js";
 import { TodoSchema } from "../schema/Todo.schema.js";
 import dotenv from "dotenv";
+import { ElevatedTokenSchema } from "../schema/ElevatedToken.schema.js";
 
 dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: process.env.DB_HOST,
-  port: 5432,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME || "neondb",
+  url: process.env.DATABASE_URL,
   synchronize: false,
   logging: false,
-  entities: [UserSchema, TodoSchema],
+  entities: [UserSchema, TodoSchema, ElevatedTokenSchema],
   migrations: ["./migrations/*.js"],
   migrationsTableName: "migrations",
   ssl: {
