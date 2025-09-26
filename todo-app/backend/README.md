@@ -1,6 +1,9 @@
 # Todo API - TypeORM + PostgreSQL
 
-Bu proje, Hafta 03 ödevleri için geliştirilmiş bir REST API'dir. PostgreSQL veritabanı ve TypeORM kullanarak kullanıcılar ve todo'lar yönetimini sağlar.
+Bu proje, Hafta 3 ödevleri için geliştirilmiş ve hafta 4 için yeni özellikler
+eklenmiş bir REST API'dir. PostgreSQL veritabanı ve TypeORM kullanarak
+kullanıcılar ve todo'lar yönetimini sağlar. JWT ile kimlik ve yetki doğrulaması
+yapar.
 
 ## Özellikler
 
@@ -9,6 +12,8 @@ Bu proje, Hafta 03 ödevleri için geliştirilmiş bir REST API'dir. PostgreSQL 
 - Zod ile request validasyonu
 - Query builder ile filtreleme, arama ve sayfalama
 - Migration desteği
+- Hesap sistemi, JWT
+- Eposta doğrulama
 
 ## Kurulum
 
@@ -27,8 +32,10 @@ DB_USERNAME=your-db-username
 DB_PASSWORD=your-db-password
 DB_NAME=neondb
 JWT_SECRET=CHANGEME
-KOLPOMAIL_HOST=http://your-kolpomail-host
+KOLPOMAIL_HOST=http://your-kolpomail-host.example.com
 ```
+Açtığınız `kolpomail` sunucusunun linkini `KOLPOMAIL_HOST`a yapıştırın. GitHub
+CodeSpace kullanabilirsiniz.
 
 3. Migration'ları çalıştırın:
 
@@ -47,8 +54,26 @@ npm run dev
 ### Users
 
 - `POST /api/users` - Yeni kullanıcı oluştur
+- `POST /api/users/login` - Kullanıcı hesabına giriş yap (JWT)
 - `GET /api/users` - Tüm kullanıcıları listele
-- `GET /api/users/:id/todos` - Kullanıcının todo'larını listele
+
+### Accounts
+
+Bu kategorideki endpointler için kullanıcı `Authorization: <token>` şeklinde
+bir header gönderir.
+
+- `GET /api/me/todos` - Kullanıcının todo'larını listele
+- `POST /api/me/2fa` - Kullanıcı epostasına yetki yükseltme token'ı gönder
+- `POST /api/me/change_email` - Epostayı güncelle
+  (yetki yükseltme icin token gerekir)
+- `POST /api/me/change_password` - Şifreyi güncelle
+  (yetki yükseltme için token gerekir)
+
+#### Yetki Yükseltme Tokenları
+
+Eposta ya da şifre değiştirmek için epostaya gönderilen token gerekir. Bu
+token back end'e `?token=<epostaya-iletilen-token>` şeklinde query ile
+iletilir.
 
 ### Todos
 
