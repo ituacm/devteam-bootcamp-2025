@@ -2,6 +2,7 @@ import express from "express";
 import "reflect-metadata";
 import { AppDataSource } from "./db/data-source.js";
 import usersRouter from "./routes/usersRouter.js";
+import accountRouter from "./routes/accountRouter.js";
 import todosRouter from "./routes/todosRouter.js";
 import { notFoundHandler } from "./middleware/errors/notFoundHandler.js";
 import { errorHandler } from "./middleware/errors/errorHandler.js";
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", usersRouter);
 app.use("/api/todos", todosRouter);
+app.use("/api/me", accountRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

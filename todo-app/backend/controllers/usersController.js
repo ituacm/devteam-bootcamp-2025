@@ -11,6 +11,15 @@ export async function listUsers(req, res) {
 }
 
 export async function getUserTodos(req, res) {
-  const todos = await usersService.getUserTodos(req.params.id, req.query);
+  const todos = await usersService.getUserTodos(req.user.id, req.query);
   res.json(todos);
+}
+
+export async function login(req, res) {
+  const { token, user } = await usersService.login(
+    req.body.username,
+    req.body.password
+  );
+
+  res.json({ token, user });
 }
