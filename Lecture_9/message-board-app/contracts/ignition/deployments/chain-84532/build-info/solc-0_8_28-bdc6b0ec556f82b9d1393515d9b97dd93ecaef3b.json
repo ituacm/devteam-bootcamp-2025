@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-bdc6b0ec556f82b9d1393515d9b97dd93ecaef3b",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/MessageBoard.sol": "project/contracts/MessageBoard.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/MessageBoard.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.28;\n\n/**\n * @title MessageBoard\n * @dev Simple message board contract for Base blockchain\n */\ncontract MessageBoard {\n    struct Message {\n        uint256 id;\n        address author;\n        string content;\n        uint256 timestamp;\n    }\n\n    Message[] public messages;\n    uint256 public messageCount;\n\n    event MessagePosted(\n        uint256 indexed id,\n        address indexed author,\n        string content,\n        uint256 timestamp\n    );\n\n    /**\n     * @dev Post a new message\n     * @param _content The message content\n     */\n    function postMessage(string memory _content) public {\n        require(bytes(_content).length > 0, \"Message cannot be empty\");\n        require(bytes(_content).length <= 280, \"Message too long\");\n\n        uint256 newId = messageCount;\n        messages.push(\n            Message({\n                id: newId,\n                author: msg.sender,\n                content: _content,\n                timestamp: block.timestamp\n            })\n        );\n\n        messageCount++;\n\n        emit MessagePosted(newId, msg.sender, _content, block.timestamp);\n    }\n\n    /**\n     * @dev Get a specific message\n     * @param _id The message ID\n     */\n    function getMessage(\n        uint256 _id\n    )\n        public\n        view\n        returns (\n            uint256 id,\n            address author,\n            string memory content,\n            uint256 timestamp\n        )\n    {\n        require(_id < messageCount, \"Message does not exist\");\n        Message memory message = messages[_id];\n        return (message.id, message.author, message.content, message.timestamp);\n    }\n\n    /**\n     * @dev Get recent messages\n     * @param _count Number of recent messages to return\n     */\n    function getRecentMessages(\n        uint256 _count\n    ) public view returns (Message[] memory) {\n        uint256 count = _count > messageCount ? messageCount : _count;\n        Message[] memory recentMessages = new Message[](count);\n\n        for (uint256 i = 0; i < count; i++) {\n            recentMessages[i] = messages[messageCount - 1 - i];\n        }\n\n        return recentMessages;\n    }\n\n    /**\n     * @dev Get total number of messages\n     */\n    function getMessageCount() public view returns (uint256) {\n        return messageCount;\n    }\n}\n"
+      }
+    }
+  }
+}

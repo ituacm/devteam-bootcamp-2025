@@ -1,0 +1,13 @@
+{
+  "name": "message-board-app",
+  "version": "1.0.0",
+  "description": "Message Board dApp on Base",
+  "scripts": {
+    "compile": "hardhat compile",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0"
+  }
+}
